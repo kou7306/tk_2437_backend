@@ -331,9 +331,9 @@ model user {
   id           String   @id(map: "User_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name         String?
   createdAt    DateTime @default(now())
-  sex          BigInt?
+  sex          String?
   events       Json?    @db.Json
-  age          BigInt?
+  age          String?
   place        String?
   mbti         String?
   detail       String?
