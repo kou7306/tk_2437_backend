@@ -14,6 +14,20 @@ export const getUserService = async (user_id: string) => {
   }
 };
 
+export const registerMbtiService = async (mbti: string) => {
+  try {
+    await prisma.user.create({
+      data: {
+        mbti: mbti,
+      },
+    });
+    return true;
+  } catch (error) {
+    console.error("Error registering user:", error);
+    throw new Error("ユーザー情報の登録に失敗しました");
+  }
+};
+
 export const registerUserService = async (user_id: string) => {
   try {
     await prisma.user.create({
