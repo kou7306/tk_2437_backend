@@ -26,7 +26,7 @@ export const registerUserController = async (req: Request, res: Response) => {
 };
 
 export const registerMbtiController = async (req: Request, res: Response) => {
-  const { id, mbti } = req.body as { id: string; mbti: (boolean | string[])[] };
+  const { id, mbti } = req.body as { id: string; mbti: (boolean | string[])[][] };
   try {
     const result = await registerMbtiService(id, mbti);
     res.status(200).json({ success: result });
