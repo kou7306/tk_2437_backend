@@ -34,3 +34,13 @@ export const registerMbtiController = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+export const createUserController = async (req: Request, res: Response) => {
+  const { id } = req.body as { id: string };
+  try {
+    const bool = await registerUserService(id);
+    res.status(200).json(bool);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
