@@ -359,6 +359,7 @@ model recruitment {
   tags         String[]
   owner_id     String?
   event_url    String?
+  owner_name   String?
 
   @@schema("public")
 }

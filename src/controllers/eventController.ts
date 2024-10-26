@@ -5,6 +5,7 @@ import {
   createEventService,
 } from "../services/eventService";
 import { Event } from "../types/Event";
+import { suggestEventService } from "../services/userService";
 
 export const getEventController = async (req: Request, res: Response) => {
   const { id } = req.query as { id: string };
@@ -53,6 +54,16 @@ export const createEventController = async (req: Request, res: Response) => {
 
     console.log(newEvent);
     res.status(200).json(newEvent);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const suggestEventController = async (req: Request, res: Response) => {
+  const { uuid } = req.query as { uuid: string };
+  try {
+    const events = await suggestEventService(uuid);
+    res.status(200).json(events);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }

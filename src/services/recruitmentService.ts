@@ -62,22 +62,75 @@ export const createRecruitmentService = async (
   recruitmentData: Recruitment
 ) => {
   try {
+    // Retrieve the user's name based on the owner_id
+    const user = await prisma.user.findUnique({
+      where: { id: recruitmentData.owner_id },
+    });
+
+    if (!user) {
+      throw new Error("ユーザーが見つかりませんでした");
+    }
+
+    // Use the retrieved user's name if `name` is not provided in recruitmentData
     const newRecruitment = await prisma.recruitment.create({
       data: {
         title: recruitmentData.title,
         detail: recruitmentData.detail,
         name: recruitmentData.name,
-        date: recruitmentData.date ? new Date(recruitmentData.date) : null, // 日付があれば変換
-        sum: recruitmentData.sum ? String(recruitmentData.sum) : "0", // sumがundefinedの場合は"0"をデフォルトに
-        participants: recruitmentData.participants || [], // participantsがundefinedの場合は空配列
-        tags: recruitmentData.tags || [], // tagsがundefinedの場合は空配列
-        owner_id: recruitmentData.owner_id, // オーナーID
-        event_url: recruitmentData.event_url, // イベントURL
+        date: recruitmentData.date ? new Date(recruitmentData.date) : null,
+        sum: recruitmentData.sum ? String(recruitmentData.sum) : "0",
+        participants: recruitmentData.participants || [],
+        tags: recruitmentData.tags || [],
+        owner_id: recruitmentData.owner_id,
+        event_url: recruitmentData.event_url,
+        owner_name: user.name || "no name",
       },
     });
+
     return newRecruitment;
   } catch (error) {
     console.error("Failed to create recruitment:", error);
     throw new Error("リクルート情報の作成に失敗しました");
+  }
+};
+
+export const joinRecruitmentService = async (
+  uuid: string,
+  recruitment_id: string
+): Promise<boolean> => {
+  try {
+    // Check if the recruitment exists
+    const recruitment = await prisma.recruitment.findUnique({
+      where: { id: recruitment_id },
+    });
+
+    if (!recruitment) {
+      throw new Error("Recruitment not found.");
+    }
+
+    // Check if the user is the owner
+    if (recruitment.owner_id === uuid) {
+      throw new Error("User cannot join their own recruitment.");
+    }
+
+    // Check if the user is already a participant
+    if (recruitment.participants && recruitment.participants.includes(uuid)) {
+      throw new Error("User is already joined to this recruitment.");
+    }
+
+    // Update the recruitment to add the user to the participants
+    await prisma.recruitment.update({
+      where: { id: recruitment_id },
+      data: {
+        participants: {
+          push: uuid, // Push the new participant to the array
+        },
+      },
+    });
+
+    return true; // Indicate success
+  } catch (error) {
+    console.error("Failed to join recruitment:", error);
+    throw error; // Rethrow error to be caught by the controller
   }
 };

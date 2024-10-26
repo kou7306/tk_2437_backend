@@ -10,4 +10,5 @@ export interface Recruitment {
   tags?: string[]; // タグ（文字列の配列）
   owner_id?: string; // オーナーID（任意）
   event_url?: string; // イベントURL（任意）
+  owner_name?: string; // オーナー名（任意）
 }

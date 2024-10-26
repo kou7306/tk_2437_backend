@@ -3,6 +3,7 @@ import {
   getRecruitmentService,
   getFilteredRecruitmentsService,
   createRecruitmentService,
+  joinRecruitmentService,
 } from "../services/recruitmentService";
 import { Recruitment } from "../types/Recruitment";
 
@@ -59,6 +60,23 @@ export const createRecruitmentController = async (
     // サービスを使って新しいイベントを作成
     const newRecruitment = await createRecruitmentService(recruitmentData);
     res.status(200).json(newRecruitment);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const joinRecruitmentController = async (
+  req: Request,
+  res: Response
+) => {
+  const { uuid, recruitment_id } = req.body as {
+    uuid: string;
+    recruitment_id: string;
+  };
+
+  try {
+    const bool = await joinRecruitmentService(uuid, recruitment_id);
+    res.status(200).json(bool);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
