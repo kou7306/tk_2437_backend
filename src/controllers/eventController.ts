@@ -50,6 +50,8 @@ export const createEventController = async (req: Request, res: Response) => {
   try {
     // サービスを使って新しいイベントを作成
     const newEvent = await createEventService(eventData);
+
+    console.log(newEvent);
     res.status(200).json(newEvent);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });

@@ -354,7 +354,7 @@ model recruitment {
   detail       String?
   name         String?
   date         DateTime? @db.Date
-  sum          BigInt?
+  sum          String?
   participants String[]
   tags         String[]
   owner_id     String?
@@ -373,6 +373,7 @@ model event {
   tags       String[]
   detail     String?
   mbti       String?
+  company    String?
 
   @@schema("public")
 }

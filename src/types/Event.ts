@@ -1,4 +1,5 @@
 export interface Event {
+  id?: string; // ID
   name: string; // イベント名
   detail?: string; // イベント詳細
   place?: string; // 開催場所
@@ -9,4 +10,5 @@ export interface Event {
   tags?: string[]; // タグ
   url?: string; // イベントのURL
   mbti?: string; // MBTI
+  company?: string; // 会社名
 }

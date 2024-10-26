@@ -47,6 +47,7 @@ export const getFilteredEventsService = async (filter: {
 };
 
 export const createEventService = async (eventData: Event) => {
+  // ここでタグを元にMBTIを振り分けるロジックを描く
   try {
     const newEvent = await prisma.event.create({
       data: {

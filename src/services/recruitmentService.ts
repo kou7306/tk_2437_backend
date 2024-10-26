@@ -68,7 +68,7 @@ export const createRecruitmentService = async (
         detail: recruitmentData.detail,
         name: recruitmentData.name,
         date: recruitmentData.date ? new Date(recruitmentData.date) : null, // 日付があれば変換
-        sum: recruitmentData.sum || 0, // sumがundefinedの場合は0をデフォルトに
+        sum: recruitmentData.sum ? String(recruitmentData.sum) : "0", // sumがundefinedの場合は"0"をデフォルトに
         participants: recruitmentData.participants || [], // participantsがundefinedの場合は空配列
         tags: recruitmentData.tags || [], // tagsがundefinedの場合は空配列
         owner_id: recruitmentData.owner_id, // オーナーID

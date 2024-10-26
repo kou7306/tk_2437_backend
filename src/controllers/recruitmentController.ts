@@ -8,10 +8,13 @@ import { Recruitment } from "../types/Recruitment";
 
 export const getRecruitmentController = async (req: Request, res: Response) => {
   const { id } = req.query as { id: string };
+  console.log(id);
   try {
-    const users = await getRecruitmentService(id);
-    res.status(200).json(users);
+    const recruitment = await getRecruitmentService(id);
+    console.log(recruitment);
+    res.status(200).json(recruitment);
   } catch (error) {
+    console.error("Error fetching recruitment:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
