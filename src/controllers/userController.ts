@@ -26,10 +26,10 @@ export const registerUserController = async (req: Request, res: Response) => {
 };
 
 export const registerMbtiController = async (req: Request, res: Response) => {
-  const { mbti } = req.body as { mbti: string };
+  const { id, mbti } = req.body as { id: string; mbti: (boolean | string[])[] };
   try {
-    const bool = await registerMbtiService(mbti);
-    res.status(200).json(bool);
+    const result = await registerMbtiService(id, mbti);
+    res.status(200).json({ success: result });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }

@@ -14,17 +14,34 @@ export const getUserService = async (user_id: string) => {
   }
 };
 
-export const registerMbtiService = async (mbti: string) => {
+export const registerMbtiService = async (user_id: string, mbtiAnswers: (boolean | string[])[]) => {
   try {
-    await prisma.user.create({
+    // 分類ロジック
+    const mbtiType = classifyMbti(mbtiAnswers);
+
+    await prisma.user.update({
+      where: {
+        id: user_id,
+      },
       data: {
-        mbti: mbti,
+        mbti: mbtiType,
       },
     });
     return true;
   } catch (error) {
-    console.error("Error registering user:", error);
-    throw new Error("ユーザー情報の登録に失敗しました");
+    console.error("Error registering MBTI:", error);
+    throw new Error("MBTIの登録に失敗しました");
+  }
+};
+
+const classifyMbti = (answers: (boolean | string[])[]): number => {
+  // 分類ロジック
+  const positiveAnswers = answers.filter(answer => answer === true).length;
+  console.log("Positive Answers:", positiveAnswers); // ポジティブな回答の数をログに出力
+  if (positiveAnswers > answers.length / 2) {
+    return 1; // タイプA
+  } else {
+    return 2; // タイプB
   }
 };
 

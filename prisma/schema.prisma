@@ -367,7 +367,7 @@ model user {
   events       Json?    @db.Json
   age          BigInt?
   place        String?
-  mbti         String?
+  mbti         BigInt?
   detail       String?
   date         String?
   url          String?
