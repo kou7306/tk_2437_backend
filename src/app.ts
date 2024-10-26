@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import http from "http";
 import cors from "cors";
+import userRoute from "./routes/userRoute";
 
 dotenv.config();
 
@@ -21,5 +22,7 @@ app.use(cors(corsOptions));
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
+
+app.use("/user", userRoute);
 
 export { app, server };
