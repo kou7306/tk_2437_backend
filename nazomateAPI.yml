@@ -1,0 +1,437 @@
+openapi: "3.0.2"
+info:
+  title: Nazomate
+  version: "1.0"
+  description: Nazomate API Document
+paths:
+  /user/get-user:
+    get:
+      tags:
+        - user
+      description: "特定のIDのユーザー情報を一つ取得する"
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "User ID"
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  sex:
+                    type: integer
+                  age:
+                    type: integer
+                  place:
+                    type: string
+                  events:
+                    type: object
+                  mbti:
+                    type: integer
+
+  /user/update-user:
+    post:
+      tags:
+        - user
+      description: "特定のIDのユーザー情報を更新する"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                name:
+                  type: string
+                sex:
+                  type: integer
+                age:
+                  type: integer
+                place:
+                  type: string
+                events:
+                  type: object
+                mbti:
+                  type: integer
+      responses:
+        "200":
+          description: "User created successfully"
+
+  /recruitment/get-recruitment:
+    get:
+      tags:
+        - recruitment
+      description: "特定のIDの募集を取ってくる"
+      parameters:
+        - name: recruitmentId
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "recruitment ID"
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  detail:
+                    type: string
+                  place:
+                    type: string
+                  date:
+                    type: string
+                    format: date
+                  url:
+                    type: string
+                  event_id:
+                    type: string
+                  participants:
+                    type: array
+                    items:
+                      type: string
+
+  /recruitment/get-filtered-recruitments:
+    get:
+      tags:
+        - recruitment
+      description: "さまざまな条件で募集を取ってくる"
+      parameters:
+        - name: condition
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "条件"
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    detail:
+                      type: string
+                    place:
+                      type: string
+                    date:
+                      type: string
+                      format: date
+                    url:
+                      type: string
+                    event_id:
+                      type: string
+                    participants:
+                      type: array
+                      items:
+                        type: string
+
+  /recruitment/post:
+    post:
+      tags:
+        - recruitment
+      description: "募集を作成する"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                detail:
+                  type: string
+                place:
+                  type: string
+                date:
+                  type: string
+                  format: date
+                url:
+                  type: string
+                event_id:
+                  type: string
+                participants:
+                  type: array
+                  items:
+                    type: string
+              required:
+                - name
+                - detail
+                - date
+                - url
+      responses:
+        "201":
+          description: "Recruitment created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  message:
+                    type: string
+                    example: "Recruitment created successfully."
+        "400":
+          description: "Invalid input data"
+        "500":
+          description: "Server error"
+
+  /recruitment/suggest:
+    get:
+      tags:
+        - recruitment
+      description: "特定のIDのユーザーに対して10件の募集を提案する"
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "User ID"
+      responses:
+        "200":
+          description: "Successful response with 10 recommendations"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    detail:
+                      type: string
+                    place:
+                      type: string
+                    date:
+                      type: string
+                      format: date
+                    url:
+                      type: string
+                    event_id:
+                      type: string
+                    participants:
+                      type: array
+                      items:
+                        type: string
+        "400":
+          description: "Invalid parameter"
+        "404":
+          description: "User ID not found"
+        "500":
+          description: "Server error"
+
+  /event/get-event:
+    get:
+      tags:
+        - event
+      description: "特定のIDのイベントを取ってくる"
+      parameters:
+        - name: eventId
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "event ID"
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  company:
+                    type: string
+                  detail:
+                    type: string
+                  place:
+                    type: string
+                  period:
+                    type: string
+                  url:
+                    type: string
+                    format: uri
+                  tags:
+                    type: array
+                    items:
+                      type: string
+
+  /event/get-filtered-events:
+    get:
+      tags:
+        - event
+      description: "条件を指定して、イベントを取ってくる"
+      parameters:
+        - name: condition
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "条件"
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    company:
+                      type: string
+                    detail:
+                      type: string
+                    place:
+                      type: string
+                    period:
+                      type: string
+                    url:
+                      type: string
+                    tags:
+                      type: array
+                      items:
+                        type: string
+  /event/post:
+    post:
+      tags:
+        - event
+      description: "イベントを作成する"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                company:
+                  type: string
+                detail:
+                  type: string
+                place:
+                  type: string
+                period:
+                  type: string
+                url:
+                  type: string
+                  format: uri
+                tags:
+                  type: array
+                  items:
+                    type: string
+              required:
+                - name
+                - company
+                - detail
+                - place
+                - period
+                - url
+      responses:
+        "201":
+          description: "Event created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  message:
+                    type: string
+                    example: "Event created successfully."
+        "400":
+          description: "Invalid input data"
+        "500":
+          description: "Server error"
+
+  /event/suggest:
+    get:
+      tags:
+        - event
+      description: "特定のIDのユーザーに対して10件のイベントを提案する"
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "User ID"
+      responses:
+        "200":
+          description: "Successful response with 10 recommendations"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    company:
+                      type: string
+                    detail:
+                      type: string
+                    place:
+                      type: string
+                    period:
+                      type: string
+                    url:
+                      type: string
+                      format: uri
+                    tags:
+                      type: array
+                      items:
+                        type: string
+        "400":
+          description: "Invalid parameter"
+        "404":
+          description: "User ID not found"
+        "500":
+          description: "Server error"
+
+security:
+  - aaa: [aaa]
