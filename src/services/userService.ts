@@ -35,14 +35,14 @@ export const registerMbtiService = async (user_id: string, mbtiAnswers: (boolean
   }
 };
 
-const classifyMbti = (answers: (boolean | string[])[][]): number => {
+const classifyMbti = (answers: (boolean | string[])[][]): string => {
   // 分類ロジック
   const positiveAnswers = answers.flat().filter(answer => answer === true).length;
   console.log("Positive Answers:", positiveAnswers); // ポジティブな回答の数をログに出力
   if (positiveAnswers > answers.length / 2) {
-    return 1; // タイプA
+    return "1"; // タイプA
   } else {
-    return 2; // タイプB
+    return "2"; // タイプB
   }
 };
 
