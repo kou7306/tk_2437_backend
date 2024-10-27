@@ -97,7 +97,6 @@ const determineMbti = (tags: string[]): string => {
 };
 
 export const createEventService = async (eventData: Event) => {
-  // ここでタグを元にMBTIを振り分けるロジックを描く
   const mbti = determineMbti(eventData.tags ?? []);
   try {
     const newEvent = await prisma.event.create({
