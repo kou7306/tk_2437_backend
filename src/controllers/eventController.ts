@@ -4,9 +4,9 @@ import {
   getFilteredEventsService,
   createEventService,
   getEventsWithRecruitments,
+  suggestEventService,
 } from "../services/eventService";
 import { Event } from "../types/Event";
-import { suggestEventService } from "../services/userService";
 
 export const getEventController = async (req: Request, res: Response) => {
   const { id } = req.query as { id: string };
