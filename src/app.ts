@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import http from "http";
 import cors from "cors";
 import userRoute from "./routes/userRoute";
+import eventRoute from "./routes/eventRoute";
+import recruitmentRoute from "./routes/recruitmentRoute";
 
 dotenv.config();
 
@@ -24,5 +26,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/user", userRoute);
+app.use("/event", eventRoute);
+app.use("/recruitment", recruitmentRoute);
 
 export { app, server };
