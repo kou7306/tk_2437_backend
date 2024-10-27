@@ -343,6 +343,7 @@ model user {
   participants String?
   message      String?
   email        String?
+  percentage   String[]
 
   @@schema("public")
 }

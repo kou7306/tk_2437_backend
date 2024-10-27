@@ -1,5 +1,6 @@
 import prisma from "../config/prisma";
 import { User } from "../types/User";
+import { classifyMbti } from "../utils/classifyMbti";
 
 export const getUserService = async (user_id: string) => {
   try {
@@ -15,17 +16,27 @@ export const getUserService = async (user_id: string) => {
   }
 };
 
-export const registerMbtiService = async (mbti: string) => {
+export const registerMbtiService = async (
+  user_id: string,
+  mbtiAnswers: (boolean | string[])[][]
+) => {
   try {
-    await prisma.user.create({
+    // 分類ロジック
+    const { type: mbtiType, percentages } = classifyMbti(mbtiAnswers); // typeとpercentagesを抽出
+
+    await prisma.user.update({
+      where: {
+        id: user_id,
+      },
       data: {
-        mbti: mbti,
+        mbti: mbtiType, // mbtiTypeには型のみを格納
+        percentage: percentages.map(String), // percentagesを保存
       },
     });
     return true;
   } catch (error) {
-    console.error("Error registering user:", error);
-    throw new Error("ユーザー情報の登録に失敗しました");
+    console.error("Error registering MBTI:", error);
+    throw new Error("MBTIの登録に失敗しました");
   }
 };
 
