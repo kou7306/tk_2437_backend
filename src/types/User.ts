@@ -6,6 +6,7 @@ export interface User {
   age?: string; // 年齢, optional (string 型に変更)
   place?: string; // 場所, optional
   mbti?: string; // MBTIタイプ, optional
+  percentage?: string[]; // パーセンテージ, optional
   detail?: string; // 詳細, optional
   date?: string; // 日付, optional
   url?: string; // URL, optional

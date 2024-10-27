@@ -16,21 +16,52 @@ export const getUserService = async (user_id: string) => {
   }
 };
 
+const determineMbti = (answers: (boolean | string[])[][]): { type: string, percentages: number[] } => {
+  const categories = [
+    { trueType: "V", falseType: "H" }, // イベントスタイル
+    { trueType: "S", falseType: "T" }, // 参加形態
+    { trueType: "E", falseType: "C" }, // 難易度志向
+  ];
+
+  const percentages = categories.map((category, index) => {
+    const trueCount = answers[index].filter(answer => answer === true).length;
+    return Math.round((trueCount / answers[index].length) * 100);
+  });
+
+  const mbti = categories.map((category, index) => {
+    const trueCount = answers[index].filter(answer => answer === true).length;
+    const falseCount = answers[index].length - trueCount;
+    return trueCount >= falseCount ? category.trueType : category.falseType;
+  }).join("");
+
+  // 謎解きの正解数に基づいてスキルレベルを判定
+  const correctAnswers = ["選択肢1", "選択肢3"]; // 正解の選択肢
+  const selectedOptions = answers[3] as unknown as string[]; // 型キャストを修正
+  const correctCount = selectedOptions.filter(option => correctAnswers.includes(option)).length;
+  const skillLevel = correctCount === 2 ? "A" : correctCount === 1 ? "I" : "N";
+
+  // 4項目目の正答率を計算
+  const correctPercentage = Math.round((correctCount / correctAnswers.length) * 100);
+  percentages.push(correctPercentage);
+
+  return { type: mbti + skillLevel, percentages };
+};
+
 export const registerMbtiService = async (
   user_id: string,
   mbtiAnswers: (boolean | string[])[][]
 ) => {
   try {
     // 分類ロジック
-    const { type: mbtiType, percentages } = classifyMbti(mbtiAnswers); // typeとpercentagesを抽出
+    const { type: mbtiType, percentages } = determineMbti(mbtiAnswers); // typeとpercentagesを抽出
 
     await prisma.user.update({
       where: {
         id: user_id,
       },
       data: {
-        mbti: mbtiType, // mbtiTypeには型のみを格納
-        percentage: percentages.map(String), // percentagesを保存
+        mbti: mbtiType, // mbtiTypeには4文字のMBTIを格納
+        percentage: percentages.map(String) // percentagesを保存
       },
     });
     return true;
@@ -67,6 +98,7 @@ export const updateUserService = async (userData: User) => {
         events: userData.events,
         place: userData.place,
         mbti: userData.mbti,
+        percentage: userData.percentage,
         detail: userData.detail,
         date: userData.date,
         url: userData.url,
