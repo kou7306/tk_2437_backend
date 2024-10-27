@@ -55,8 +55,49 @@ export const getFilteredEventsService = async (filter: {
   }
 };
 
+const mbtiTags = {
+  E: ["outgoing", "social", "talkative"],
+  I: ["introverted", "reserved", "quiet"],
+  S: ["sensing", "practical", "realistic"],
+  N: ["intuitive", "imaginative", "abstract"],
+  T: ["thinking", "logical", "analytical"],
+  F: ["feeling", "empathetic", "compassionate"],
+  J: ["judging", "organized", "planned"],
+  P: ["perceiving", "spontaneous", "flexible"],
+};
+
+const determineMbti = (tags: string[]): string => {
+  const counts = {
+    E: 0,
+    I: 0,
+    S: 0,
+    N: 0,
+    T: 0,
+    F: 0,
+    J: 0,
+    P: 0,
+  };
+
+  tags.forEach(tag => {
+    Object.keys(mbtiTags).forEach(key => {
+      if (mbtiTags[key as keyof typeof mbtiTags].includes(tag)) {
+        counts[key as keyof typeof counts]++;
+      }
+    });
+  });
+
+  const mbti = [
+    counts.E >= counts.I ? "E" : "I",
+    counts.S >= counts.N ? "S" : "N",
+    counts.T >= counts.F ? "T" : "F",
+    counts.J >= counts.P ? "J" : "P",
+  ].join("");
+
+  return mbti;
+};
+
 export const createEventService = async (eventData: Event) => {
-  // ここでタグを元にMBTIを振り分けるロジックを描く
+  const mbti = determineMbti(eventData.tags ?? []);
   try {
     const newEvent = await prisma.event.create({
       data: {
@@ -66,6 +107,7 @@ export const createEventService = async (eventData: Event) => {
         period: eventData.period,
         tags: eventData.tags,
         url: eventData.url,
+        mbti,
       },
     });
     return newEvent;
