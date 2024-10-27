@@ -1,5 +1,6 @@
 import prisma from "../config/prisma";
 import { User } from "../types/User";
+import { classifyMbti } from "../utils/classifyMbti";
 
 export const getUserService = async (user_id: string) => {
   try {
@@ -15,34 +16,27 @@ export const getUserService = async (user_id: string) => {
   }
 };
 
-export const registerMbtiService = async (user_id: string, mbtiAnswers: (boolean | string[])[][]) => {
+export const registerMbtiService = async (
+  user_id: string,
+  mbtiAnswers: (boolean | string[])[][]
+) => {
   try {
     // 分類ロジック
-    const mbtiType = classifyMbti(mbtiAnswers);
+    const { type: mbtiType, percentages } = classifyMbti(mbtiAnswers); // typeとpercentagesを抽出
 
     await prisma.user.update({
       where: {
         id: user_id,
       },
       data: {
-        mbti: mbtiType,
+        mbti: mbtiType, // mbtiTypeには型のみを格納
+        percentage: percentages.map(String), // percentagesを保存
       },
     });
     return true;
   } catch (error) {
     console.error("Error registering MBTI:", error);
     throw new Error("MBTIの登録に失敗しました");
-  }
-};
-
-const classifyMbti = (answers: (boolean | string[])[][]): string => {
-  // 分類ロジック
-  const positiveAnswers = answers.flat().filter(answer => answer === true).length;
-  console.log("Positive Answers:", positiveAnswers); // ポジティブな回答の数をログに出力
-  if (positiveAnswers > answers.length / 2) {
-    return "1"; // タイプA
-  } else {
-    return "2"; // タイプB
   }
 };
 
@@ -86,5 +80,31 @@ export const updateUserService = async (userData: User) => {
   } catch (error) {
     console.error("Error updating user data:", error);
     throw new Error("ユーザー情報の更新に失敗しました");
+  }
+};
+
+export const suggestEventService = async (user_id: string) => {
+  // ユーザーのMBTIと同じMBTIをもつイベントを提案する
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: user_id,
+      },
+    });
+
+    if (!user) {
+      throw new Error("ユーザーが見つかりません");
+    }
+
+    const events = await prisma.event.findMany({
+      where: {
+        mbti: user.mbti,
+      },
+    });
+
+    return events;
+  } catch (error) {
+    console.error("Error suggesting events:", error);
+    throw new Error("イベントの提案に失敗しました");
   }
 };
