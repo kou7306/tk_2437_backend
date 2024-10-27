@@ -25,22 +25,31 @@ export const getFilteredRecruitmentController = async (
   res: Response
 ) => {
   // クエリパラメータからフィルター情報を取得
-  const { sortOrder, limit, place, date } = req.query as {
+  const { sortOrder, limit, place, date, tags } = req.query as {
     sortOrder?: "newest" | "oldest";
     limit?: string;
     place?: string;
     date?: string;
+    tags?: string | string[]; // tagsを文字列または文字列の配列として定義
   };
 
   try {
+    // tagsが文字列である場合、JSON.parseで配列に変換
+    const parsedTags = Array.isArray(tags)
+      ? tags
+      : tags
+      ? JSON.parse(tags)
+      : undefined;
+
     const filter = {
       sortOrder,
       limit: limit ? parseInt(limit) : undefined,
       place,
       date,
+      tags: parsedTags, // 変換されたtagsを使用
     };
 
-    // サービスからフィルターされたイベントを取得
+    // サービスからフィルターされたリクルート情報を取得
     const recruitments = await getFilteredRecruitmentsService(filter);
     console.log(recruitments);
     res.status(200).json(recruitments);

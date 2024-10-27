@@ -18,6 +18,7 @@ export const getFilteredRecruitmentsService = async (filter: {
   limit?: number;
   place?: string;
   date?: string;
+  tags?: string[]; // タグのパラメータを追加
 }) => {
   try {
     const queryOptions: any = {
@@ -26,26 +27,34 @@ export const getFilteredRecruitmentsService = async (filter: {
       take: filter.limit || 10,
     };
 
-    // Sort order
+    // ソート順
     if (filter.sortOrder === "newest") {
       queryOptions.orderBy.created_at = "desc";
     } else if (filter.sortOrder === "oldest") {
       queryOptions.orderBy.created_at = "asc";
     }
 
-    // Place filter
+    // 場所フィルタ
     if (filter.place) {
       queryOptions.where.place = filter.place;
     }
 
-    // Date filter
+    // 日付フィルタ
     if (filter.date) {
       queryOptions.where.date = new Date(filter.date);
     }
 
+    console.log("tags", filter.tags);
+
+    // タグフィルタ
+    if (filter.tags && filter.tags.length > 0) {
+      queryOptions.where.tags = {
+        hasSome: filter.tags, // filter.tagsをそのまま使用
+      };
+    }
+
     const recruitments = await prisma.recruitment.findMany(queryOptions);
 
-    // BigIntを数値に変換
     const formattedRecruitments = recruitments.map((recruitment) => ({
       ...recruitment,
       sum: recruitment.sum ? Number(recruitment.sum) : undefined, // sumをNumberに変換
