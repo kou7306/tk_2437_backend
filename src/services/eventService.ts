@@ -18,13 +18,13 @@ export const getFilteredEventsService = async (filter: {
   limit?: number;
   place?: string;
   date?: string;
-  tags?: string[]; // タグのフィルターを追加
+  tags?: string[];
 }) => {
   console.log(filter.tags);
   try {
     const queryOptions = {
       where: {
-        ...(filter.place && { place: filter.place }),
+        ...(filter.place && { place: filter.place }), // 引用符を外す
         ...(filter.date && {
           period: {
             path: "$.start",
@@ -35,7 +35,7 @@ export const getFilteredEventsService = async (filter: {
         ...(filter.tags &&
           filter.tags.length > 0 && {
             tags: {
-              hasSome: filter.tags, // タグのフィルターを追加
+              hasSome: filter.tags, // tagsフィルターは配列をそのまま使用
             },
           }),
       },
@@ -47,6 +47,7 @@ export const getFilteredEventsService = async (filter: {
     };
 
     const similarEvents = await prisma.event.findMany(queryOptions);
+    console.log(similarEvents);
     return similarEvents;
   } catch (error) {
     console.error("Failed to fetch filtered similar events:", error);
