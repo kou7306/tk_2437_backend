@@ -327,53 +327,53 @@ model users {
   @@schema("auth")
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model Recruitment {
-  id           String   @id
-  created_at   DateTime @default(now()) @db.Timestamptz(6)
-  name         String?
-  detail       String?
-  place        String?
-  date         String?
-  url          String?
-  event_id     String?
-  participants String?
-  message      String?
-
-  @@schema("public")
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model event {
-  id         String   @id
-  created_at DateTime @default(now()) @db.Timestamptz(6)
-  name       String?
-  company    String?
-  detail     String?
-  place      String?
-  period     String?
-  url        String?
-  tags       String?
-  message    String?
-
-  @@schema("public")
-}
-
 model user {
   id           String   @id(map: "User_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name         String?
   createdAt    DateTime @default(now())
-  sex          BigInt?
+  sex          String?
   events       Json?    @db.Json
-  age          BigInt?
+  age          String?
   place        String?
-  mbti         BigInt?
+  mbti         String?
   detail       String?
   date         String?
   url          String?
   event_id     String?
   participants String?
   message      String?
+  email        String?
+
+  @@schema("public")
+}
+
+model recruitment {
+  id           String    @id(map: "recruitments_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at   DateTime  @default(now()) @db.Timestamptz(6)
+  title        String?
+  detail       String?
+  name         String?
+  date         DateTime? @db.Date
+  sum          String?
+  participants String[]
+  tags         String[]
+  owner_id     String?
+  event_url    String?
+
+  @@schema("public")
+}
+
+model event {
+  id         String   @id(map: "events_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  name       String?
+  place      String?
+  period     Json?    @db.Json
+  url        String?
+  tags       String[]
+  detail     String?
+  mbti       String?
+  company    String?
 
   @@schema("public")
 }
