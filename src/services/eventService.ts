@@ -173,3 +173,29 @@ export const getEventsWithRecruitments = async (
     throw new Error("イベント情報の取得に失敗しました");
   }
 };
+
+export const suggestEventService = async (user_id: string) => {
+  // ユーザーのMBTIと同じMBTIをもつイベントを提案する
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: user_id,
+      },
+    });
+
+    if (!user) {
+      throw new Error("ユーザーが見つかりません");
+    }
+
+    const events = await prisma.event.findMany({
+      where: {
+        mbti: user.mbti,
+      },
+    });
+
+    return events;
+  } catch (error) {
+    console.error("Error suggesting events:", error);
+    throw new Error("イベントの提案に失敗しました");
+  }
+};
