@@ -22,10 +22,10 @@ export const classifyMbti = (
 
   // 各質問に応じた要素を結合してMBTIタイプを作成
   const mbtiType = [
-    classifications[0] === true ? "E" : "I", // E/I
-    classifications[1] === true ? "S" : "N", // S/N
-    classifications[2] === true ? "T" : "F", // T/F
-    classifications[3] === true ? "J" : "P", // J/P
+    classifications[0] === true ? "V" : "H",
+    classifications[1] === true ? "S" : "T",
+    classifications[2] === true ? "E" : "C",
+    classifications[3] === true ? "N" : "A",
   ].join("");
 
   return { type: mbtiType, percentages };
